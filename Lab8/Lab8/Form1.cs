@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Lab8
 {
@@ -96,8 +97,10 @@ namespace Lab8
             // Враховуємо фільтри
             if (action == "Change to")
             {
+                textBox5.Text = triggerSubtext;
                 for (int i = 0; i < dateWords.Count; i++)
                 {
+                    textBox1.Text += $"`{dateWords[i]}` ";
                     if (dateWords[i] == triggerSubtext)
                     {
                         dateWords[i] = changeTo;
@@ -308,7 +311,6 @@ namespace Lab8
                 {
                     evenPositionNumbers.Add(numbers[i]);
                 }
-
                 double average = evenPositionNumbers.Count > 0 ? evenPositionNumbers.Average() : 0;
 
                 textBox13.Text = average.ToString();
@@ -317,6 +319,207 @@ namespace Lab8
             {
                 MessageBox.Show($"Виникла помилка: {ex.Message}");
             }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string path = @"D:\temp";
+
+            if (!Directory.Exists(path))
+            {
+                // Створення папки
+                Directory.CreateDirectory(path);
+                MessageBox.Show("Папка створена успішно.");
+            }
+            else
+            {
+                MessageBox.Show("Папка вже існує.");
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            string path1 = @"D:\temp\Mudrak1";
+            string path2 = @"D:\temp\Mudrak2";
+
+            if (!Directory.Exists(path1))
+            {
+                Directory.CreateDirectory(path1);
+                MessageBox.Show("Папка створена успішно.");
+            }
+            else
+            {
+                MessageBox.Show($"Папка Mudrak1 вже існує.");
+            }
+
+            if (!Directory.Exists(path2))
+            {
+                Directory.CreateDirectory(path2);
+                MessageBox.Show("Папка створена успішно.");
+            }
+            else
+            {
+                MessageBox.Show($"Папка Mudrak2 вже існує.");
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            string path1 = @"D:\temp\Mudrak1";
+
+            string file1 = Path.Combine(path1, "t1.txt");
+            string file2 = Path.Combine(path1, "t2.txt");
+
+            string name1 = "Шевченко Степан Іванович, 2001";
+            string name2 = "Комар Сергій Федорович, 2000";
+            string city1 = "м.Суми";
+            string city2 = "м.Київ";
+
+            string content1 = $"{name1} року народження, місце проживання {city1}";
+            string content2 = $"{name2} року народження, місце проживання {city2}";
+
+            File.WriteAllText(file1, content1);
+            File.WriteAllText(file2, content2);
+
+            MessageBox.Show("Документи створені успішно.");
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            string copyPath1 = @"D:\temp\Mudrak1\t1.txt";
+            string copyPath2 = @"D:\temp\Mudrak1\t2.txt";
+            string pastePath1 = @"D:\temp\Mudrak2\t3.txt";
+
+            try
+            {
+                string content1 = File.ReadAllText(copyPath1);
+                string content2 = File.ReadAllText(copyPath2);
+
+                File.WriteAllText(pastePath1, content1 + Environment.NewLine + content2);
+
+                MessageBox.Show("Вміст скопійовано успішно.");
+            }
+            catch (IOException error)
+            {
+                MessageBox.Show($"Помилка: {error.Message}");
+            }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            string path1 = @"D:\temp\Mudrak1\t1.txt";
+            string path2 = @"D:\temp\Mudrak1\t2.txt";
+            string path3 = @"D:\temp\Mudrak2\t3.txt";
+
+            try
+            {
+                // Побудова рядка із інформацією про файли
+                StringBuilder fileInfo = new StringBuilder();
+                fileInfo.AppendLine("Створені файли:");
+                fileInfo.AppendLine($"Шлях першого файлу: {path1}");
+                fileInfo.AppendLine($"Шлях другого файлу: {path2}");
+                fileInfo.AppendLine($"Шлях третього файлу: {path3}");
+
+                textBox14.Text = fileInfo.ToString();
+            }
+            catch (IOException error)
+            {
+                MessageBox.Show($"Помилка: {error.Message}");
+            }
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            string fromPath = @"D:\temp\Mudrak1\t2.txt";
+            string toPath = @"D:\temp\Mudrak2";
+
+            try
+            {
+                string fileName = Path.GetFileName(fromPath);
+                string toFilePath = Path.Combine(toPath, fileName);
+
+                File.Move(fromPath, toFilePath);
+
+                MessageBox.Show("Документ перенесено успішно.");
+            }
+            catch (IOException error)
+            {
+                MessageBox.Show($"Помилка: {error.Message}");
+            }
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            string fromPath = @"D:\temp\Mudrak1\t1.txt";
+            string toPath = @"D:\temp\Mudrak2";
+
+            try
+            {
+                string fileName = Path.GetFileName(fromPath);
+                string toFilePath = Path.Combine(toPath, fileName);
+
+                File.Copy(fromPath, toFilePath);
+
+                MessageBox.Show("Документ скопійовано успішно.");
+            }
+            catch (IOException error)
+            {
+                MessageBox.Show($"Помилка: {error.Message}");
+            }
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            string oldFolderPath = @"D:\temp";
+            string newFolderPath = @"D:\ALL";
+
+            try
+            {
+                Directory.Move(oldFolderPath, newFolderPath);
+
+                Console.WriteLine("Назва папки змінена успішно.");
+            }
+            catch (IOException error)
+            {
+                Console.WriteLine($"Помилка: {error.Message}");
+            }
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            string folderPath = @"D:\ALL"; // Путь к вашей папке
+
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+                int directoryCount = directoryInfo.GetDirectories().Length;
+                string information = $"Number of Directories: {directoryCount}";
+                textBox14.Text = information;
+
+                int txtFileCount = CountTxtFiles(folderPath);
+                string information1 = $"\r\nNumber of .txt Files: {txtFileCount}";
+                textBox14.Text += information1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private int CountTxtFiles(string folderPath)
+        {
+            int txtFileCount = 0;
+
+            if (!Directory.Exists(folderPath))
+            {
+                throw new DirectoryNotFoundException($"Directory \"{folderPath}\" not found.");
+            }
+
+            foreach (string filePath in Directory.EnumerateFiles(folderPath, "*.txt", SearchOption.AllDirectories))
+            {
+                txtFileCount++;
+            }
+
+            return txtFileCount;
         }
     }
 }
